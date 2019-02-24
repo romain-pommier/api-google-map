@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    
+    
+  </head>
+  <body>
+        <div id="map" style="width: 600px; height: 600px;">
+    
+        </div>
+    
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnam1p2tgjseVn16mmQuh6c4gDJWuT0Tc&callback=initApp">
+        </script>
+        <script>
+            "use strict"
+            function initApp() {
+                fetch('https://data.toulouse-metropole.fr/api/records/1.0/search/?dataset=ludotheques&rows=15')
+                    .then(response => response.json())
+                    .then(obj => initMap(obj.records));
+    
+            }
+            function initMap(records) {
+                const ludoMap = new google.maps.Map(document.getElementById('map'), { zoom: 12, center: {lat: 43.6, lng:1.433333 }});
+                for (let ludo of records) {
+                    let ludoMarker = new google.maps.Marker({ position: {lat: ludo.fields.geo_point_2d[0], lng: ludo.fields.geo_point_2d[1]}, map: ludoMap });
+                    ludoMarker.ludotheque = ludo;
+                    console.log (ludoMarker)
+                    ludoMarker.addListener('click', function(){
+                        console.log (ludoMarker.ludotheque.fields.nom)
+                    });
+                }
+            }
+    
+    
+        </script>
+    </body>
+</html>
